@@ -1055,6 +1055,21 @@ class HomeFeedCard extends LitElement {
 			if(isNaN(n.timeDifference.value)){
 				timeItem = html`<div style="display:block; ${compact_mode ? "float:right" : "clear:both;"}">${n.timestamp}</div>`;
 			}
+			else if (n.format == "smart") {
+				let date = this.moment(n.timestamp).startOf('day');
+				let days = Math.abs(date.diff(this.moment().startOf('day'),'days'));
+				var timeString;
+				if (days < 1) {
+					timeString = "Heute ("+date.format("dd")+")";
+				}
+				else if (days < 2) {
+					timeString = "Morgen ("+date.format("dd")+")";
+				}
+				else {
+					timeString = date.format("dd D.M.")
+				}
+				timeItem = html`<div style="display:block; ${compact_mode ? "float:right" : "clear:both;"}" title="${new Date(n.timestamp)}">${timeString}</div>`;
+			}
 			else if(n.timeDifference.abs < 60 && n.format == "relative" && !exact_durations) {
 				// Time difference less than 1 minute, so use a regular div tag with fixed text.
 				// This avoids the time display refreshing too often shortly before or after an item's timestamp
@@ -1081,8 +1096,11 @@ class HomeFeedCard extends LitElement {
 									title="${new Date(n.timestamp)}"
 								></hui-timestamp-display>
               				`;
+
 			}
 		}
+
+
 		
 		
 
